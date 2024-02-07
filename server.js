@@ -1,37 +1,35 @@
-const http = require("http");
-const url = require("url");
+const express = require('express');
+const mysql = require('mysql');
 
-const { users } = require("./users");
+const app = express();
 
-const requestListener = (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  if (parsedUrl.pathname === "/") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.write(JSON.stringify(users));
-    res.end();
-  } else if (parsedUrl.pathname === "/user") {
-    const { id } = parsedUrl.query;
-    if (!id) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.write(JSON.stringify({ error: "User Id not provided" }));
-      res.end();
-    }
-    const user = users.find(({ _id }) => id === _id);
-    if (!user) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.write(JSON.stringify({ error: "Could not find requested resource" }));
-      res.end();
-    } else {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.write(JSON.stringify(user));
-      res.end();
-    }
-  } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "Could not find requested resource" }));
-    res.end();
+// MySQL Connection
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'testDB'
+});
+
+// Connect to MySQL
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL database: ' + err.stack);
+    return;
   }
-};
-const server = http.createServer(requestListener);
-server.listen(8000);
-console.log("Application running on Port 8000");
+  console.log('Connected to MySQL database as id ' + connection.threadId);
+});
+
+// Create a route to fetch users from the database
+app.get('/users', (req, res) => {
+  connection.query('SELECT * FROM users', (error, results, fields) => {
+    if (error) throw error;
+    res.json(results);
+  });
+});
+
+// Start the server
+const PORT = 8001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
