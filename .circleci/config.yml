@@ -6,7 +6,7 @@ jobs:
       - image: arvindr226/alpine-ssh
     steps:
       - run: echo "Running deployment..."
-      - run: ssh -oStrictHostKeyChecking=no -v ec2-user@ec2-16-171-134-221.eu-north-1.compute.amazonaws.com "sudo su -c './deploy.sh'"
+      - run: ssh -oStrictHostKeyChecking=no -v ec2-user@ec2-13-60-23-150.eu-north-1.compute.amazonaws.com "sudo su -c './deploy.sh'"
 
 workflows:
   deploy-to-ec2:
