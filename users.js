@@ -5,7 +5,7 @@ exports.users = [
     picture: "http://placehold.it/32x32",
     age: 22,
     eyeColor: "green",
-    name: "Krishna",
+    name: "Aakarshak",
     gender: "male",
     email: "hardingtaylor@lexicondo.com",
     phone: "+1 (839) 440-2917",
